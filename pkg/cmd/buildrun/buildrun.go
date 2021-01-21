@@ -7,7 +7,7 @@ import (
 // BuildRunCmd represents the buildrun command
 var BuildRunCmd = &cobra.Command{
 	Use:   "buildrun",
-	Short: "todo",
+	Short: "starts a BuildRun",
 	Long: `
 
 Todo
@@ -19,14 +19,16 @@ Todo
 	SilenceErrors: true,
 
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// todo: trigger basic validations
-		// around the cmd usage
-		return CmdFunc()
+		return buildRunFunc()
 	},
 }
 
-// CmdFunc ...
-func CmdFunc() error {
-	// todo: add cmd business logic
+func init() {
+	BuildRunCmd.AddCommand(
+		StartCmd,
+	)
+}
+
+func buildRunFunc() error {
 	return nil
 }
