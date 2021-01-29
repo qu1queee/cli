@@ -1,17 +1,18 @@
 package build
 
 import (
+	"github.com/shipwright-io/cli/pkg/cmd/clients"
+	"github.com/shipwright-io/cli/pkg/cmd/flags"
 	"github.com/spf13/cobra"
 )
 
 // DeleteCmd represents the delete command
 var DeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: "delete´s a Build",
+	Short: "deletes a Build instance",
 	Long: `
-
-todo
-	`,
+This removes an existent Build instance from the desired namespace.
+`,
 
 	SilenceUsage:  true,
 	SilenceErrors: true,
@@ -23,8 +24,11 @@ todo
 
 func init() {
 	BuildCmd.AddCommand()
+	flags.CommonFlags(DeleteCmd)
 }
 
 func deleteFunc() error {
+	// obtain clients first
+	clients.NewClients()
 	return nil
 }

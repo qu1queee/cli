@@ -7,11 +7,14 @@ import (
 // BuildCmd represents the build command
 var BuildCmd = &cobra.Command{
 	Use:   "build",
-	Short: "creates a Build",
+	Short: "how to build container images",
 	Long: `
+Builds are used for describing how to build
+your container images and where to store them.
 
-TODO
-	`,
+Creating a Build instance doesn´t trigger the 
+building mechanism.
+`,
 
 	SilenceUsage:  true,
 	SilenceErrors: true,
@@ -29,5 +32,6 @@ func init() {
 }
 
 func buildFunc() error {
+	// authenticate to cluster
 	return nil
 }

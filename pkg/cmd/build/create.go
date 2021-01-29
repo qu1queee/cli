@@ -1,17 +1,17 @@
 package build
 
 import (
+	"github.com/shipwright-io/cli/pkg/cmd/flags"
 	"github.com/spf13/cobra"
 )
 
 // CreateCmd represents the create command
 var CreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "todo",
+	Short: "creates a Build instance",
 	Long: `
-
-todo
-	`,
+This generates a Build instance in the desired namespace.
+`,
 
 	SilenceUsage:  true,
 	SilenceErrors: true,
@@ -23,8 +23,11 @@ todo
 
 func init() {
 	BuildCmd.AddCommand()
+	flags.CommonFlags(CreateCmd)
 }
 
 func createFunc() error {
+	// obtain clients first
+	// clients.NewClients()
 	return nil
 }
