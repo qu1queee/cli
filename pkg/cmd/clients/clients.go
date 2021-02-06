@@ -21,7 +21,7 @@ type Clients struct {
 }
 
 // NewClients provides you an instance of Clients
-func NewClients(ctx context.Context) (*Clients, error) {
+func NewClients() (*Clients, error) {
 
 	c, err := getRestClient()
 	if err != nil {
@@ -39,7 +39,6 @@ func NewClients(ctx context.Context) (*Clients, error) {
 	}
 
 	return &Clients{
-		Context:     ctx,
 		RestConfig:  c,
 		BuildClient: buildset,
 		Client:      clientset,

@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/shipwright-io/cli/pkg/cmd/build"
 	"github.com/shipwright-io/cli/pkg/cmd/buildrun"
+	"github.com/shipwright-io/cli/pkg/cmd/flags"
 	"github.com/spf13/cobra"
 )
 
@@ -20,6 +21,7 @@ See the individual commands to get an overview.
 }
 
 func init() {
+	flags.CommonFlags(rootCmd)
 	rootCmd.AddCommand(
 		build.BuildCmd,
 		buildrun.BuildRunCmd,

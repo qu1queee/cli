@@ -1,12 +1,9 @@
 package build
 
 import (
-	"context"
-	"time"
-
-	"github.com/shipwright-io/cli/pkg/cmd/clients"
-	"github.com/shipwright-io/cli/pkg/cmd/flags"
+	"github.com/shipwright-io/cli/pkg/cmd/options"
 	"github.com/spf13/cobra"
+	corev1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // DeleteCmd represents the delete command
@@ -22,27 +19,25 @@ This removes an existent Build instance from the desired namespace.
 
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		// Ensure all subCommands get a ctx timeout
-		// TODO: move this block out of here
-		ctx := context.Background()
-		subCommandsCTX, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
-		defer cancelFunc()
-
-		// Get the clients
-		c, err := clients.NewClients(subCommandsCTX)
+		var options options.List
+		opts, err := options.NewList()
 		if err != nil {
 			return err
 		}
-
-		return deleteFunc(c)
+		return deleteFunc(opts)
 	},
 }
 
 func init() {
 	BuildCmd.AddCommand()
-	flags.CommonFlags(DeleteCmd)
+	// flags.CommonFlags(DeleteCmd)
 }
 
-func deleteFunc(c *clients.Clients) error {
+func deleteFunc(opts options.List) error {
+	data := Info.NewMetaData()
+	err := opts.Clients.BuildClient.BuildV1alpha1().Builds(data.Namespace).Delete(opts.Context, data.Name, corev1.DeleteOptions{})
+	if err != nil {
+		return err
+	}
 	return nil
 }
