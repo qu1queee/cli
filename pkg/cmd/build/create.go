@@ -1,6 +1,10 @@
 package build
 
 import (
+	"context"
+	"time"
+
+	"github.com/shipwright-io/cli/pkg/cmd/clients"
 	"github.com/shipwright-io/cli/pkg/cmd/flags"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +21,20 @@ This generates a Build instance in the desired namespace.
 	SilenceErrors: true,
 
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return createFunc()
+
+		// Ensure all subCommands get a ctx timeout
+		// TODO: move this block out of here
+		ctx := context.Background()
+		subCommandsCTX, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+		defer cancelFunc()
+
+		// Get the clients
+		c, err := clients.NewClients(subCommandsCTX)
+		if err != nil {
+			return err
+		}
+
+		return createFunc(c)
 	},
 }
 
@@ -26,8 +43,6 @@ func init() {
 	flags.CommonFlags(CreateCmd)
 }
 
-func createFunc() error {
-	// obtain clients first
-	// clients.NewClients()
+func createFunc(c *clients.Clients) error {
 	return nil
 }

@@ -1,22 +1,59 @@
 package clients
 
 import (
+	"context"
+	"os"
+	"path/filepath"
+
+	buildclient "github.com/shipwright-io/build/pkg/client/build/clientset/versioned"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
+	restclient "k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 // Clients holds a struct with all the necessary
 // interfaces for CRUD events across multiple objects
 type Clients struct {
-	RestConfig *rest.Config
-	Client     kubernetes.Interface
+	Context     context.Context
+	RestConfig  *restclient.Config
+	BuildClient buildclient.Interface
+	Client      kubernetes.Interface
 }
 
 // NewClients provides you an instance of Clients
-func NewClients() (*Clients, error) {
-	// TODO: properly populate each field
+func NewClients(ctx context.Context) (*Clients, error) {
+
+	c, err := getRestClient()
+	if err != nil {
+		return nil, err
+	}
+
+	clientset, err := kubernetes.NewForConfig(c)
+	if err != nil {
+		return nil, err
+	}
+
+	buildset, err := buildclient.NewForConfig(c)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Clients{
-		RestConfig: nil,
-		Client:     nil,
+		Context:     ctx,
+		RestConfig:  c,
+		BuildClient: buildset,
+		Client:      clientset,
 	}, nil
+}
+
+func getRestClient() (*restclient.Config, error) {
+	kubeConfigPath := filepath.Join(
+		os.Getenv("HOME"), ".kube", "config",
+	)
+	c, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
+
 }
